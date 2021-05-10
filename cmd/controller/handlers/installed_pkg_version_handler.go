@@ -68,14 +68,14 @@ func (ipvh *InstalledPkgVersionHandler) Generic(evt event.GenericEvent, q workqu
 }
 
 func (ipvh *InstalledPkgVersionHandler) enqueueEligibleInstalledPackages(q workqueue.RateLimitingInterface, obj runtime.Object) error {
-	pkg := obj.(*pkgv1alpha1.Package)
+	pv := obj.(*pkgv1alpha1.PackageVersion)
 	installedPkgList, err := ipvh.client.InstallV1alpha1().InstalledPackages("").List(context.Background(), metav1.ListOptions{})
 	if err != nil {
 		return err
 	}
 
 	for _, ip := range installedPkgList.Items {
-		if ip.Spec.PkgRef.PublicName == pkg.Spec.PublicName && ipvh.isEligibleForVersionUpgrade(pkg.Spec.Version, ip) {
+		if ip.Spec.PackageName == pv.Spec.PackageName && ipvh.isEligibleForVersionUpgrade(pv.Spec.Version, ip) {
 			q.Add(reconcile.Request{NamespacedName: types.NamespacedName{
 				Name:      ip.Name,
 				Namespace: ip.Namespace,
@@ -87,14 +87,7 @@ func (ipvh *InstalledPkgVersionHandler) enqueueEligibleInstalledPackages(q workq
 }
 
 func (ipvh *InstalledPkgVersionHandler) isEligibleForVersionUpgrade(version string, installedPkg ipkgv1alpha1.InstalledPackage) bool {
-	semverConfig := installedPkg.Spec.PkgRef.VersionSelection
-	if installedPkg.Spec.PkgRef.Version != "" {
-		semverConfig = &versions.VersionSelectionSemver{
-			Constraints: installedPkg.Spec.PkgRef.Version,
-			// Prereleases must be non nil to be included
-			Prereleases: &versions.VersionSelectionSemverPrereleases{},
-		}
-	}
+	semverConfig := installedPkg.Spec.VersionSelection
 
 	selectedVersion, err := versions.HighestConstrainedVersion([]string{version}, versions.VersionSelection{Semver: semverConfig})
 	if selectedVersion == "" || err != nil {

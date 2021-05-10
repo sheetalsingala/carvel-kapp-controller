@@ -2,6 +2,10 @@
 
 package v1alpha1
 
-// PackageListerExpansion allows custom methods to be added to
+// PackageVersionListerExpansion allows custom methods to be added to
+// PackageVersionLister.
+type PackageVersionListerExpansion interface{}
+
+// packageListerExpansion allows custom methods to be added to
 // PackageLister.
 type PackageListerExpansion interface{}

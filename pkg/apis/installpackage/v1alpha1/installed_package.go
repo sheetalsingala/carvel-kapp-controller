@@ -13,7 +13,7 @@ import (
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 // +kubebuilder:subresource:status
 // +kubebuilder:resource:shortName=ipkg
-// +kubebuilder:printcolumn:name=Package name,JSONPath=.spec.packageRef.publicName,description=Package public name,type=string
+// +kubebuilder:printcolumn:name=Package name,JSONPath=.spec.packageName,description=Package public name,type=string
 // +kubebuilder:printcolumn:name=Package version,JSONPath=.status.version,description=Package version,type=string
 // +kubebuilder:printcolumn:name=Description,JSONPath=.status.friendlyDescription,description=Friendly description,type=string
 // +kubebuilder:printcolumn:name=Age,JSONPath=.metadata.creationTimestamp,description=Time since creation,type=date
@@ -46,20 +46,13 @@ type InstalledPackageSpec struct {
 	// +optional
 	Cluster *v1alpha1.AppCluster `json:"cluster,omitempty"`
 	// +optional
-	PkgRef *PackageRef `json:"packageRef,omitempty"`
+	PackageName string `json:"packageName,omitempty"`
+	// +optional
+	VersionSelection *versions.VersionSelectionSemver `json:"versionSelection,omitempty"`
 	// +optional
 	Values []InstalledPackageValues `json:"values,omitempty"`
 
 	// TODO other App CR related fields
-}
-
-type PackageRef struct {
-	// +optional
-	PublicName string `json:"publicName,omitempty"`
-	// +optional
-	Version string `json:"version,omitempty"`
-	// +optional
-	VersionSelection *versions.VersionSelectionSemver `json:"versionSelection,omitempty"`
 }
 
 type InstalledPackageValues struct {

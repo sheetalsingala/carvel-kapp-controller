@@ -67,25 +67,8 @@ spec:
                 namespace:
                   type: string
               type: object
-            packageRef:
-              properties:
-                publicName:
-                  type: string
-                version:
-                  type: string
-                versionSelection:
-                  properties:
-                    constraints:
-                      type: string
-                    prereleases:
-                      properties:
-                        identifiers:
-                          items:
-                            type: string
-                          type: array
-                      type: object
-                  type: object
-              type: object
+            packageName:
+              type: string
             serviceAccountName:
               type: string
             values:
@@ -100,6 +83,18 @@ spec:
                     type: object
                 type: object
               type: array
+            versionSelection:
+              properties:
+                constraints:
+                  type: string
+                prereleases:
+                  properties:
+                    identifiers:
+                      items:
+                        type: string
+                      type: array
+                  type: object
+              type: object
           type: object
         status:
           properties:
